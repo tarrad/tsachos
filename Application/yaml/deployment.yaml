@@ -3,6 +3,7 @@ apiVersion: apps/v1
 metadata:
 # Set your lab user name
   name: tzach112-hello-world
+  namespace: tzach112-application
 spec:
   replicas: 3
   selector:
