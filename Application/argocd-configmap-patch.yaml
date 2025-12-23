@@ -1,0 +1,31 @@
+# ArgoCD ConfigMap patch to enable OpenShift Route resource discovery
+# Apply this if you have cluster admin access:
+# kubectl patch configmap argocd-cm -n argocd --patch-file Application/argocd-configmap-patch.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: argocd
+data:
+  resource.customizations: |
+    route.openshift.io/Route:
+      health.lua: |
+        hs = {}
+        if obj.status ~= nil then
+          if obj.status.ingress ~= nil and #obj.status.ingress > 0 then
+            hs.status = "Healthy"
+            hs.message = "Route is active"
+          else
+            hs.status = "Progressing"
+            hs.message = "Route is being created"
+          end
+        else
+          hs.status = "Progressing"
+          hs.message = "Route status unknown"
+        end
+        return hs
+      ignoreDifferences: |
+        jsonPointers:
+        - /status
+

@@ -3,7 +3,6 @@ apiVersion: route.openshift.io/v1
 metadata:
 # set your user name
   name:  tzach112-hello-world
-  namespace: tzach112-application
 spec:
   to:
     kind: Service
